@@ -1,4 +1,5 @@
-import { FormEvent, useRef, useState } from "react";
+import React, { FormEvent, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useFetch } from "../../hooks/useFetch";
 //styles
 import "./Create.css";
@@ -12,6 +13,7 @@ export const Create = (props: CreateProps) => {
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [cookingTime, setCookingTime] = useState("");
   const ingredientInput = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   const { postData, data, error } = useFetch(
     "http://localhost:3000/recipes",
@@ -27,6 +29,8 @@ export const Create = (props: CreateProps) => {
       cookingTime: cookingTime + " minutes",
     };
     postData(recipeSubmission);
+    alert("Successly Created A New Recipe...");
+    navigate("/");
   };
 
   const handleAdd = (e: FormEvent) => {

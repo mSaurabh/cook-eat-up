@@ -9,7 +9,10 @@ export const useFetch = (url: string, method = "GET") => {
   const postData = (postDataObj: any) => {
     setOptions({
       method: "POST",
-      headers: { "content-type": "application-json" },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
       body: JSON.stringify(postDataObj),
     });
   };
@@ -24,6 +27,7 @@ export const useFetch = (url: string, method = "GET") => {
           ...fetchOptions,
           signal: controller.signal,
         };
+
         const res = await fetch(url, reqFetchOptions);
         if (!res.ok) {
           throw new Error(res.statusText);
