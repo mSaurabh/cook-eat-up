@@ -2,6 +2,7 @@
 import { useParams } from "react-router-dom";
 import { IRecipe } from "../../components/dataInterfaces";
 import { useFetch } from "../../hooks/useFetch";
+import { useTheme } from "../../hooks/useTheme";
 //styles
 import "./Recipe.css";
 
@@ -9,6 +10,7 @@ interface RecipeProps {}
 
 export const Recipe = (props: RecipeProps) => {
   const { id: recipeId } = useParams();
+  const { mode } = useTheme();
   const url = "http://localhost:3000/recipes/" + recipeId;
   const {
     data: recipe,
@@ -21,13 +23,13 @@ export const Recipe = (props: RecipeProps) => {
   } = useFetch(url);
 
   return (
-    <div className="recipe">
+    <div className={`recipe ${mode}`}>
       {error && <p className="error">{error}</p>}
       {isPending && <div className="loading">Loading ...</div>}
       {recipe && (
         <>
           {/* @ts-ignore */}
-          <h2 className="page-title">{recipe?.title}</h2>
+          <h2 className="recipe-page-title">{recipe?.title}</h2>
           {/* @ts-ignore */}
           <p>Takes {recipe.cookingTime} to cook.</p>
           <ul>
