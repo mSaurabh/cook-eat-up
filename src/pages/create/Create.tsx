@@ -1,6 +1,8 @@
 import React, { FormEvent, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useFetch } from "../../hooks/useFetch";
+import { IRecipe } from "../../components/dataInterfaces";
+import { projectFirestore } from "../../firebase/config";
+import { FPATH } from "../../firebase/firestore.props";
 //styles
 import "./Create.css";
 
@@ -15,34 +17,36 @@ export const Create = (props: CreateProps) => {
   const ingredientInput = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
-  const { postData, data, error } = useFetch(
-    "http://localhost:3000/recipes",
-    "POST"
-  );
-
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const recipeSubmission = {
+    const recipeSubmission: IRecipe = {
+      id: "",
       title,
       ingredients,
       method,
       cookingTime: cookingTime + " minutes",
     };
-    postData(recipeSubmission);
-    alert("Successly Created A New Recipe...");
-    navigate("/");
+    const recipeRef = projectFirestore.collection(FPATH.RECIPES);
+    const newRecipeId = recipeRef.doc().id;
+    recipeSubmission.id = newRecipeId;
+
+    try {
+      await recipeRef.doc(newRecipeId).set(recipeSubmission, { merge: true });
+      alert("Successly created a new recipe...");
+      navigate("/");
+    } catch (err: any) {
+      console.log(err);
+    }
   };
 
   const handleAdd = (e: FormEvent) => {
     e.preventDefault();
     const ing = newIngredient.trim();
-    console.log(ing);
     if (ing && !ingredients.includes(ing)) {
       setIngredients((prevIngredients) => [...prevIngredients, ing]);
     }
     setNewIngredient("");
     ingredientInput.current && ingredientInput.current.focus();
-    console.log(ingredients);
   };
   return (
     <div className="create">

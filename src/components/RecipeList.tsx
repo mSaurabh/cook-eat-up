@@ -1,5 +1,8 @@
 //components
 import { Link } from "react-router-dom";
+import TrashCan from "../assets/trashcan.svg";
+import { projectFirestore } from "../firebase/config";
+import { FPATH } from "../firebase/firestore.props";
 import { useTheme } from "../hooks/useTheme";
 // interface
 import { IRecipe } from "./dataInterfaces";
@@ -16,6 +19,10 @@ const RecipeList = (props: RecipeListProps) => {
   if (recipes.length === 0) {
     return <div className="error">No recipes to load...</div>;
   }
+  const handleClick = (recipeId: string) => {
+    projectFirestore.collection(FPATH.RECIPES).doc(recipeId).delete();
+  };
+
   return (
     <div className="recipe-list">
       {recipes.map((recipe) => (
@@ -26,6 +33,13 @@ const RecipeList = (props: RecipeListProps) => {
             {recipe.method.substring(0, 100)}...
           </div>
           <Link to={`/recipes/${recipe.id}`}>Cook This</Link>
+          <img
+            src={TrashCan}
+            className="delete"
+            onClick={() => {
+              handleClick(recipe.id);
+            }}
+          />
         </div>
       ))}
     </div>

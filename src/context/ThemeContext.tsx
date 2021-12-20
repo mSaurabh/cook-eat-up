@@ -18,7 +18,7 @@ export const ThemeProvider = (props: IThemeProvider) => {
 
   const [state, dispatch] = React.useReducer(themeReducer, {
     color: "#58249c",
-    mode: "dark",
+    mode: "light",
   });
 
   // custom logic
