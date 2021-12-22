@@ -20,25 +20,35 @@ export const Recipe = (props: RecipeProps) => {
   React.useEffect(() => {
     setIsPending(true);
 
-    projectFirestore
+    const unsub = projectFirestore
       .collection(FPATH.RECIPES)
       .doc(recipeId)
-      .get()
-      .then((snapshot) => {
-        if (snapshot.exists) {
-          const recipe = snapshot.data() as IRecipe;
-          setRecipe({ ...recipe, id: snapshot.id });
-          setError("");
-        } else {
-          setError("Could not find that recipe...");
+      .onSnapshot(
+        (snapshot) => {
+          if (snapshot.exists) {
+            const recipe = snapshot.data() as IRecipe;
+            setRecipe({ ...recipe, id: snapshot.id });
+            setError("");
+          } else {
+            setError("Could not find that recipe...");
+          }
+        },
+        (err) => {
+          setError(err.message);
         }
-      })
-      .catch((err) => {
-        setError(err.message);
-      });
+      );
 
     setIsPending(false);
+
+    return () => unsub();
   }, [recipeId]);
+
+  const handleClick = (id: string) => {
+    projectFirestore
+      .collection(FPATH.RECIPES)
+      .doc(id)
+      .update({ title: "Something Completely Different" });
+  };
   return (
     <div className={`recipe ${mode}`}>
       {error && <p className="error">{error}</p>}
@@ -53,6 +63,7 @@ export const Recipe = (props: RecipeProps) => {
             ))}
           </ul>
           <p className="method">{recipe.method}</p>
+          <button onClick={() => handleClick(recipe.id)}>Update</button>
         </>
       )}
     </div>
