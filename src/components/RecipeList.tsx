@@ -34,6 +34,7 @@ const RecipeList = (props: RecipeListProps) => {
           </div>
           <Link to={`/recipes/${recipe.id}`}>Cook This</Link>
           <img
+            alt="Delete this recipe"
             src={TrashCan}
             className="delete"
             onClick={() => {

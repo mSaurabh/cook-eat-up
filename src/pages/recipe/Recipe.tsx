@@ -43,12 +43,12 @@ export const Recipe = (props: RecipeProps) => {
     return () => unsub();
   }, [recipeId]);
 
-  const handleClick = (id: string) => {
-    projectFirestore
-      .collection(FPATH.RECIPES)
-      .doc(id)
-      .update({ title: "Something Completely Different" });
-  };
+  // const handleClick = (id: string) => {
+  //   projectFirestore
+  //     .collection(FPATH.RECIPES)
+  //     .doc(id)
+  //     .update({ title: "Something Completely Different" });
+  // };
   return (
     <div className={`recipe ${mode}`}>
       {error && <p className="error">{error}</p>}
@@ -63,7 +63,6 @@ export const Recipe = (props: RecipeProps) => {
             ))}
           </ul>
           <p className="method">{recipe.method}</p>
-          <button onClick={() => handleClick(recipe.id)}>Update</button>
         </>
       )}
     </div>
